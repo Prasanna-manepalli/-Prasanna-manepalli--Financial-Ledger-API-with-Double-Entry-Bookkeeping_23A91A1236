@@ -10,7 +10,7 @@ DB_PORT = "5432"
 # -------- INPUT (TEMPORARY FOR TESTING) --------
 source_account_id = "91101a76-93ff-4066-b14b-8047d3ce40b6"
 destination_account_id = "e1030875-496d-43c8-839d-e100c71c2d04"
-transfer_amount = 500.00
+transfer_amount = Decimal("500.00")
 
 
 def transfer_money():
@@ -90,6 +90,13 @@ def transfer_money():
             )
             VALUES (gen_random_uuid(), %s, %s, 'credit', %s)
         """, (destination_account_id, transaction_id, transfer_amount))
+        # 10. Mark transaction completed
+        cursor.execute("""
+            UPDATE transactions
+            SET status = 'completed'
+            WHERE id = %s
+        """, (transaction_id,))
+
 
         # 10. Commit transaction
         conn.commit()

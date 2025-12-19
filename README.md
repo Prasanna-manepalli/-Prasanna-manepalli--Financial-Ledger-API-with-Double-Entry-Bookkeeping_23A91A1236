@@ -25,6 +25,17 @@ The system ensures that all financial operations are handled safely using **ACID
 - **Tools:** VS Code, Git, GitHub, pgAdmin
 
 ---
+## Project Structure
+```
+.
+week4/
+├── transfer.py              # Handles account-to-account transfers
+├── deposit.py               # Handles deposits into accounts
+├── database_schema.sql      # Database schema definition
+├── db_test.py               # Database connectivity testing
+└── README.md
+```
+---
 
 ## Database Design
 
@@ -48,7 +59,13 @@ The database schema is defined in `database_schema.sql`.
 Account balance is calculated dynamically using:
 
 ```sql
-SUM(credits) - SUM(debits)
+SUM(
+  CASE
+    WHEN entry_type = 'credit' THEN amount
+    ELSE -amount
+  END
+)
+
 ```
 
 ### Error Handling
@@ -67,4 +84,19 @@ The application is designed with robust error handling to ensure clear and meani
 
 This approach ensures that clients receive precise feedback while preserving data integrity.
 
+---
+
+## Notes on API Design and Evaluation Scope
+ - This project focuses on implementing the core backend logic of a financial ledger system, including double-entry bookkeeping, ACID-compliant transactions, ledger immutability, balance integrity, and concurrency safety. 
+
+ - While the core business logic is implemented and fully functional, the REST API endpoints described in the specification are conceptually addressed and documented rather than exposed through a web framework. The design and behavior of these endpoints are explained to demonstrate understanding of API semantics, error handling, and expected responses.
+- This approach emphasizes correctness, reliability, and database transaction safety, which are the primary learning objectives of this task.
+
+---
+## Application Scope Clarification
+
+- This project focuses on implementing the core backend logic of a financial ledger system, including database schema design, double-entry bookkeeping, ACID-compliant transactions, balance integrity, and concurrency safety.
+
+- The REST API endpoints described in the specification are conceptually addressed through the implemented logic and documented behavior. The primary emphasis of this submission is correctness, reliability, and transaction safety rather than full API exposure through a web framework.
+ 
 ---

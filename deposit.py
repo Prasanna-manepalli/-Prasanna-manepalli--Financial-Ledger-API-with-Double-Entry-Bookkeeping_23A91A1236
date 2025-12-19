@@ -7,7 +7,7 @@ DB_HOST = "localhost"
 DB_PORT = "5432"
 
 account_id = "91101a76-93ff-4066-b14b-8047d3ce40b6"
-deposit_amount = 1000.00
+deposit_amount = Decimal("1000.00")
 
 
 def deposit_money():
@@ -47,6 +47,16 @@ def deposit_money():
             )
             VALUES (gen_random_uuid(), %s, %s, 'credit', %s)
         """, (account_id, transaction_id, deposit_amount))
+        # 3. Mark transaction completed
+        cursor.execute("""
+            UPDATE transactions
+            SET status = 'completed'
+            WHERE id = %s
+        """, (transaction_id,))
+
+        conn.commit()
+        print("✅ Deposit successful")
+
 
         conn.commit()
         print("✅ Deposit successful")
@@ -54,8 +64,7 @@ def deposit_money():
     except Exception as e:
         if conn:
             conn.rollback()
-        print("❌ Deposit failed")
-        print(e)
+        print("❌ Deposit failed",e)
 
     finally:
         if cursor:
